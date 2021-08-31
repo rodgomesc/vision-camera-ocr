@@ -14,7 +14,7 @@ export default function App() {
   const [hasPermission, setHasPermission] = React.useState(false);
   const [ocr, setOcr] = React.useState<any>();
   const devices = useCameraDevices();
-  const device = devices.back;
+  const device = devices.front;
 
   React.useEffect(() => {
     console.log(ocr);
@@ -43,7 +43,7 @@ export default function App() {
       frameProcessor={frameProcessor}
       device={device}
       isActive={true}
-      frameProcessorFps={30}
+      frameProcessorFps={60}
     />
   ) : (
     <View>
