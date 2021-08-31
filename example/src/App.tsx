@@ -1,31 +1,53 @@
+/* eslint-disable react-native/no-inline-styles */
 import * as React from 'react';
 
+import { runOnJS } from 'react-native-reanimated';
 import { StyleSheet, View, Text } from 'react-native';
-import VisionCameraOcr from 'vision-camera-ocr';
+import { scanOCR } from 'vision-camera-ocr';
+import {
+  useCameraDevices,
+  useFrameProcessor,
+  Camera,
+} from 'react-native-vision-camera';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+  const [hasPermission, setHasPermission] = React.useState(false);
+  const [ocr, setOcr] = React.useState<any>();
+  const devices = useCameraDevices();
+  const device = devices.back;
 
   React.useEffect(() => {
-    VisionCameraOcr.multiply(3, 7).then(setResult);
+    console.log(ocr);
+  }, [ocr]);
+
+  const frameProcessor = useFrameProcessor((frame) => {
+    'worklet';
+    const scannedOcr = scanOCR(frame);
+
+    runOnJS(setOcr)(scannedOcr);
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
+  React.useEffect(() => {
+    (async () => {
+      const status = await Camera.requestCameraPermission();
+      setHasPermission(status === 'authorized');
+    })();
+  }, []);
+
+  return device !== undefined && hasPermission ? (
+    <Camera
+      style={[
+        StyleSheet.absoluteFill,
+        { borderWidth: 2, borderColor: 'red', borderStyle: 'solid' },
+      ]}
+      frameProcessor={frameProcessor}
+      device={device}
+      isActive={true}
+      frameProcessorFps={30}
+    />
+  ) : (
+    <View>
+      <Text>no camera devices</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-  },
-});

@@ -1,8 +1,13 @@
-@objc(VisionCameraOcr)
-class VisionCameraOcr: NSObject {
+import Vision
 
-    @objc(multiply:withB:withResolver:withRejecter:)
-    func multiply(a: Float, b: Float, resolve:RCTPromiseResolveBlock,reject:RCTPromiseRejectBlock) -> Void {
-        resolve(a*b)
-    }
+@objc(QRCodeFrameProcessorPlugin)
+public class QRCodeFrameProcessorPlugin: NSObject, FrameProcessorPluginBase {
+
+  @objc
+  public static func callback(_ frame: Frame!, withArgs _: [Any]!) -> Any! {
+    let buffer = frame.buffer
+    let orientation = frame.orientation
+    // code goes here
+    return []
+  }
 }

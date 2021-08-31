@@ -1,9 +1,12 @@
-import { NativeModules } from 'react-native';
+/* eslint-disable no-undef */
+import type { Frame } from 'react-native-vision-camera';
 
-type VisionCameraOcrType = {
-  multiply(a: number, b: number): Promise<number>;
-};
+/**
+ * Scans OCR.
+ */
 
-const { VisionCameraOcr } = NativeModules;
-
-export default VisionCameraOcr as VisionCameraOcrType;
+export function scanOCR(frame: Frame): any {
+  'worklet';
+  // @ts-ignore
+  return __scanOCR(frame);
+}
